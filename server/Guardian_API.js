@@ -7,14 +7,44 @@ import axios from 'axios';
 
 const guardianAPIKey = process.env.GUARDIAN_API_KEY;
 
+function processParagraph(){
+    //Converts a paragraph into an array of sentences.
+}
+
 
 function parseArticleContent(content){
     function parseBodyHTML(bodyHTML){
-        function isValidParagraph(paragraphStr){
-            return paragraphStr.length > 0;
+        function validateParagraph(paragraph){
+            function validateSentence(sentence){
+                return sentence.length > 0;
+            }
+
+
+            for(var i = 0; i < paragraph.length;i++){
+                var sentence = paragraph[i];
+
+                if(validateSentence(sentence) == false){
+                    paragraph.splice(i,1);
+                    i--;
+                }
+            }
+
+            return paragraph.length != 0;
         }
 
         var paragraphs = bodyHTML.split("\n");
+        for(var i = 0; i < paragraphs.length; i++){
+            paragraphs[i] = paragraphs[i].split(".");
+
+        }
+
+        for(var i = 0; i < paragraphs.length; i++){
+            var paragraph = paragraphs[i];
+            if(validateParagraph(paragraph) == false){
+                paragraphs.splice(i,1);
+                i--;
+            }
+        }
 
         return paragraphs
     }
@@ -28,25 +58,20 @@ function parseArticleContent(content){
         "webTitle" : content["webTitle"],
         "url" : content["webUrl"],
         "paragraphs" : parseBodyHTML(content["blocks"]["body"][0]["bodyTextSummary"])
-
     };
 }
 
 
-async function getArticle(articleID){
+export async function getArticle(articleID){
    var apiURL = "https://content.guardianapis.com/" + articleID + "?show-blocks=all&show-references=author&format=json&api-key="+"test";
-   console.log(apiURL)
 
-
-   axios.get(apiURL).then((response) => {
-    console.log(parseArticleContent(response.data.response.content));
-   },(error) =>{
-    console.log(error);
-   });
+   try{
+    const response = await axios.get(apiURL);
+    return parseArticleContent(response.data.response.content);
+   }catch(error){
+    console.error(error);
+   }
 
 }
-
-
-getArticle("world/2024/dec/27/south-korean-lawmakers-impeach-acting-president-han-duck-soo")
 
 
