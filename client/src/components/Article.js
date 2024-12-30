@@ -3,11 +3,9 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col"
 import ArticleBody from "./ArticleBody";
 import ArticleInfo from "./ArticleInfo";
-import ArticleRecommendations from "./ArticleRecommendations";
+import SuggestedArticles from "./SuggestedArticles";
 
 function GetArticle({ArticleInf,ArticleReccs}){
-    
-
     return (<Container fluid={true}>
         <Row>
             <Col>
@@ -17,7 +15,7 @@ function GetArticle({ArticleInf,ArticleReccs}){
                 <ArticleBody translatedText={ArticleInf["translatedText"]} sourceText={ArticleInf["sourceText"]}></ArticleBody>
             </Col>
             <Col>
-                <ArticleRecommendations articleRecommendations={ArticleReccs}></ArticleRecommendations>
+                <SuggestedArticles suggestedArticles={ArticleReccs}></SuggestedArticles>
             </Col>
         </Row>
     </Container>)
