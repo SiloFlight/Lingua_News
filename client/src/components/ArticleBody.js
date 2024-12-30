@@ -19,7 +19,7 @@ function GetArticleBody({translatedText,sourceText}){
     })
 
     return (
-    <Container>
+    <Container style={{width:"60%"}}>
         {ArticleBody}
     </Container>)
 }

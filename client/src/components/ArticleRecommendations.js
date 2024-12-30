@@ -12,7 +12,7 @@ function GetArticleRecommendations({articleRecommendations}){
             )
     });
 
-    return (<Container>
+    return (<Container style={{width:"20%"}}>
         {ArticleRecomendations}
     </Container>)
 }
