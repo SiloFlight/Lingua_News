@@ -9,8 +9,87 @@ const baseQueryStr = `?test=${process.env.GUARDIAN_API_KEY}&show-blocks=all&show
 
 const DaysInMonths = [31,28,31,30,31,30,31,31,30,31,30,31];
 
+//Maps Guardian API sections to my sections in my database
 const sectionIDToCategoryMap = {
-
+    "about" : "misc",
+    "animals-farmed" : "misc",
+    "artanddesign" : "art",
+    "australia-news" : "world",
+    "better-business" : "business",
+    "books" : "literature",
+    "business" : "business",
+    "business-to-business" : "business",
+    "cardiff" : "world",
+    "childrens-books-site" : "literature",
+    "cities" : "culture",
+    "commentisfree" : "misc",
+    "community" : "misc",
+    "crosswords" : "misc",
+    "culture" : "culture",
+    "culture-network" : "culture",
+    "culture-professionals-network" : "culture",
+    "edinburgh" : "world",
+    "education" : "education",
+    "enterprise-network" : "misc",
+    "environment" : "environment",
+    "extra" : "misc",
+    "fashion" : "lifestyle",
+    "film" : "film",
+    "food" : "food",
+    "football" : "sports",
+    "games" : "videoGames",
+    "global-development" : "world",
+    "global-development-professionals-network" : "world",
+    "government-computing-network" : "misc",
+    "guardian-foundation" : "misc",
+    "guardian-professional" : "misc",
+    "healthcare-network" : "misc",
+    "help" : "misc",
+    "higher-education-network" : "education",
+    "housing-network" : "world",
+    "inequality" : "society",
+    "info" : "misc",
+    "jobsadvice" : "misc",
+    "katine" : "world",
+    "law" : "politics",
+    "leeds" : "world",
+    "lifeandstyle" : "lifestyle",
+    "local" : "world",
+    "local-government-network" : "world",
+    "media" : "media",
+    "media-network" : "misc",
+    "membership" : "misc",
+    "money" : "society",
+    "music" : "music",
+    "news" : "world",
+    "politics" : "politics",
+    "public-leaders-network" : "misc",
+    "science" : "science",
+    "search" : "misc",
+    "small-business-network" : "business",
+    "social-care-network" : "health",
+    "social-enterprise-network" : "misc",
+    "society" : "society",
+    "society-professionals" : "society",
+    "sport" : "sport",
+    "stage" : "art",
+    "teacher-network" : "education",
+    "technology" : "technology",
+    "thefilter" : "misc",
+    "theguardian" : "misc",
+    "theobserver" : "misc",
+    "travel" : "lifestyle",
+    "travel/offers" : "misc",
+    "tv-and-radio" : "media",
+    "uk-news" : "world",
+    "us-news" : "world",
+    "us-wellnes" : "misc",
+    "voluntary-sector-network" : "misc",
+    "weather" : "environment",
+    "wellness" : "lifestyle",
+    "women-in-leadership" : "misc",
+    "working-in-development" : "misc",
+    "world" : "world"
 };
 
 function formatArticle(article){
@@ -19,15 +98,16 @@ function formatArticle(article){
         origin : "Guardian",
         originUrl : article.webUrl,
         articleSourceText : article.blocks.body.bodyTextSummary,
+        sourceLang : article.fields.lang,
         authors : article.tags.filter(tag => tag.type == "contributor").map(tag => tag.webTitle),
-        publishingDate : article.webPublicationDate, //Needs some processing
+        publishingDate : article.webPublicationDate, //ISO 8601
         category : article.sectionId in sectionIDToCategoryMap ? sectionIDToCategoryMap[article.sectionId] : "misc",
         title : article.webTitle,
     };
 }
 
 //Get 10 most recent articles
-async function Get10(){
+export async function Get10(){
     var APIURL = searchAPIUrl + baseQueryStr +"page-size=10";
 
     try{
@@ -39,45 +119,3 @@ async function Get10(){
         console.error(e);
     }
 }
-
-//To-Do: Some way to track how many requests I've made.
-
-/* 
-I want a function that can search for articles after a certain date, in a certain section,lang, and a query text
-*/
-
-// const testQueryInfo = {
-//     "earliestDate" : "2024-01-17",
-//     //each sections elemet will be joined with an OR operator, inner will be joined with an AND
-//     "sections" : [
-//         ["technology"]
-//     ],
-//     "language" : "en",
-//     "queryText" : "Chip"
-// }
-
-// function validateDate(dateString){
-//     const date = dateString.split(",");
-// }
-
-// function f1(queryInfo){
-//     function validateQueryInfo(queryInfo){
-//         //Validate query Info
-
-//         //Validate Date
-
-//         //Validate sections
-
-//         //Validate language
-        
-//         //Update query text with escape characters and replace spaces
-//     }
-// }
-
-// /* 
-// There should also be a function that can request a specific article from the guardian
-// */
-
-// function f2(websiteName){
-
-// }
