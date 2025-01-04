@@ -41,6 +41,58 @@ export async function InsertArticles(articles){
     }
 }
 
+export async function GetArticle(query={}){
+    try{
+        const db = client.db("MainDB");
+        const collection = db.collection("Articles");
+
+        const article = await collection.findOne(query);
+
+        return article;
+    }catch(e){
+        console.error(e);
+    }
+}
+
+export async function GetArticles(query={},max=10){
+    try{
+        const db = client.db("MainDB");
+        const collection = db.collection("Articles");
+
+        const articles = await collection.find(query).limit(max).toArray();
+
+        return articles;
+    }catch(e){
+        console.error(e);
+    }
+}
+
+export async function UpdateTranslationStatus(id,translationStatus){
+    try{
+        const db = client.db("MainDB");
+        const collection = db.collection("Articles");
+
+        const query = {_id : id};
+        const update = {
+            $set: {
+                translationInProgress : translationStatus
+            },
+        };
+
+        const result = await collection.updateOne(query,update);
+
+        if(result.matchedCount == 0){
+            console.log(`Article ${id} does not exist.`);
+            return false;
+        }
+
+        return true;
+    }catch(e){
+        console.error(e);
+        return false;
+    }
+}
+
 export async function UpdateTranslation(id,lang,translatedParagraph){
     try{
         const db = client.db("MainDB");
