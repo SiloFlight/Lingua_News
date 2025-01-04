@@ -94,10 +94,12 @@ const sectionIDToCategoryMap = {
 
 function formatArticle(article){
     return {
-        id: article.id,
+        origin_id: article.id,
         origin : "Guardian",
         originUrl : article.webUrl,
-        articleSourceText : article.blocks.body.bodyTextSummary,
+        articleSourceText : article.blocks.body.bodyTextSummary.split("\n").filter(para != ""),
+        translatedTexts : {},
+        translationInProgress : false,
         sourceLang : article.fields.lang,
         authors : article.tags.filter(tag => tag.type == "contributor").map(tag => tag.webTitle),
         publishingDate : article.webPublicationDate, //ISO 8601
@@ -117,5 +119,6 @@ export async function Get10(){
         return results.map((result,index) => formatArticle(result));
     }catch(e){
         console.error(e);
+        return [];
     }
 }
