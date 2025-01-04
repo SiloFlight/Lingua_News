@@ -1,11 +1,17 @@
 //Load env variables
 import axios from 'axios';
 import {config} from 'dotenv';
+import {JSDOM} from 'jsdom';
+const dom = new JSDOM(`<!DOCTYPE html>`);
+const document = dom.window.document;
+const Node = dom.window.Node;
 config();
 
 const singleItemAPIUrl = "https://content.guardianapis.com/";
 const searchAPIUrl = "https://content.guardianapis.com/search";
-const baseQueryStr = `?test=${process.env.GUARDIAN_API_KEY}&show-blocks=all&show-fields=all&show-tags=all&format=json`
+const baseQueryStr = `?api-key=${process.env.GUARDIAN_API_KEY}&show-blocks=all&show-fields=all&show-tags=all&format=json`;
+
+//BlackList (To-Do): Crossword
 
 const DaysInMonths = [31,28,31,30,31,30,31,31,30,31,30,31];
 
@@ -92,12 +98,33 @@ const sectionIDToCategoryMap = {
     "world" : "world"
 };
 
-function formatArticle(article){
+function extractTextWithLineBreaks(html) {
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = html;
+
+    let text = "";
+    tempElement.childNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            // Add line break after block-level elements
+            if (["P", "DIV", "BR"].includes(node.nodeName)) {
+                text += (node.textContent || "").trim() + "\n";
+            } else {
+                text += (node.textContent || "").trim();
+            }
+        } else if (node.nodeType === Node.TEXT_NODE) {
+            text += node.textContent;
+        }
+    });
+
+    return text.trim();
+}
+
+function formatArticle(article){    
     return {
         origin_id: article.id,
         origin : "Guardian",
         originUrl : article.webUrl,
-        articleSourceText : article.blocks.body.bodyTextSummary.split("\n").filter(para != ""),
+        articleSourceText : extractTextWithLineBreaks(article.fields.body).split("\n").filter(para => para != "").map(para => para.trim()),
         translatedTexts : {},
         translationInProgress : false,
         sourceLang : article.fields.lang,
@@ -110,7 +137,7 @@ function formatArticle(article){
 
 //Get 10 most recent articles
 export async function Get10(){
-    var APIURL = searchAPIUrl + baseQueryStr +"page-size=10";
+    var APIURL = searchAPIUrl + baseQueryStr +"&page-size=10";
 
     try{
         const response = await axios.get(APIURL);
