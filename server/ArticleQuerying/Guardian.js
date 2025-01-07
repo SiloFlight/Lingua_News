@@ -2,6 +2,9 @@
 import axios from 'axios';
 import {config} from 'dotenv';
 import {JSDOM} from 'jsdom';
+
+import {decomposeParagraph} from '../ParagraphProcessing/Compromise.js'
+
 const dom = new JSDOM(`<!DOCTYPE html>`);
 const document = dom.window.document;
 const Node = dom.window.Node;
@@ -121,10 +124,10 @@ function extractTextWithLineBreaks(html) {
 
 function formatArticle(article){    
     return {
-        origin_id: article.id,
+        originID: article.id,
         origin : "Guardian",
         originUrl : article.webUrl,
-        articleSourceText : extractTextWithLineBreaks(article.fields.body).split("\n").filter(para => para != "").map(para => para.trim()),
+        articleSourceText : extractTextWithLineBreaks(article.fields.body).split("\n").filter(para => para != "").map(para => para.trim()).map(decomposeParagraph),
         translatedTexts : {},
         translationInProgress : false,
         sourceLang : article.fields.lang,
@@ -136,14 +139,22 @@ function formatArticle(article){
 }
 
 //Get 10 most recent articles
-export async function Get10(){
+export async function GetArticles(){
     var APIURL = searchAPIUrl + baseQueryStr +"&page-size=10";
+
+    var processedArticles = [];
 
     try{
         const response = await axios.get(APIURL);
         var results = response.data.response.results;
 
-        return results.map((result,index) => formatArticle(result));
+        for(var i = 0; i < results.length; i++){
+            if(results[i].type == "article"){
+                processedArticles.push(formatArticle(results[i]));
+            }
+        }
+
+        return processedArticles;
     }catch(e){
         console.error(e);
         return [];
