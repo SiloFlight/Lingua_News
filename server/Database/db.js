@@ -2,7 +2,7 @@
 import {config} from 'dotenv';
 config();
 
-const { MongoClient } = require("mongodb");
+import { MongoClient } from 'mongodb';
 const connectionString = process.env.DATABASE_URL;
 
 const client = new MongoClient(connectionString);
@@ -16,7 +16,8 @@ export async function InsertArticle(article){
         const query = {origin : article.origin, originID : article.originID};
 
         //Validates that this article is not in the DB
-        if(collection.countDocuments(query) === 0){
+        const documentCount = await collection.countDocuments(query);
+        if(documentCount == 0){
             const result = await collection.insertOne(article);
 
             return true;
@@ -32,13 +33,19 @@ export async function InsertArticle(article){
 
 //To-Do: Figure out some way to instead filter the articles s.t. so that I can use insertMany instead of insertOne.
 export async function InsertArticles(articles){
-    try{
-        return articles.map(async (article,index) => await InsertArticle(article));
-    }catch(e){
-        console.error(e);
-
-        return false;
+    var res = [];
+    for(var i = 0; i < articles.length; i++){
+        try{
+            const article = articles[i];
+            const result = await InsertArticle(article);
+            res.push(result);
+        }catch(e){
+            console.log(e);
+            res.push(false);
+        }
     }
+
+    return res;
 }
 
 export async function GetArticle(query={}){
@@ -64,7 +71,19 @@ export async function GetArticles(query={},max=10){
         return articles;
     }catch(e){
         console.error(e);
+        return [];
     }
+}
+
+//Returns an article not translated into this language and doesn't have a translation in progress.
+export async function GetUntranslatedArticle(languageCode){
+    const query = {
+        [`translatedTexts.${languageCode}`] : {$exists : false},
+        translationInProgress : false
+    };
+    const untranslatedArticle = await GetArticle(query);
+
+    return untranslatedArticle;
 }
 
 export async function UpdateTranslationStatus(id,translationStatus){
@@ -119,6 +138,6 @@ export async function UpdateTranslation(id,lang,translatedParagraph){
     }
 }
 
-async function CloseDB(){
+export async function CloseDB(){
     await client.close();
 }
