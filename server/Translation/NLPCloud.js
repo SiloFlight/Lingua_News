@@ -6,7 +6,7 @@ import NLPCloudClient from 'nlpcloud';
 
 const NLPCloudKey = process.env.NLPC_API_KEY;
 
-languageCodeMap = {
+const languageCodeMap = {
     "es" : "spa_Latn",
     "en" : "eng_Latn",
     "fr" : "fra_Latn"
@@ -40,13 +40,14 @@ export async function translateSentence(sentence,sourceLang,targetLang){
             target: languageCodeMap[targetLang]
         });
 
+        console.log(response.data.translation_text);
+
         return {
             responseCode : 0,
             translatedText : response.data.translation_text
         };
     }catch(error){
-        console.error(error.response.status);
-        console.error(error.response.data.detail);
+        console.error(error);
         return {
             responseCode : 2,
             translatedText : ""
@@ -57,7 +58,7 @@ export async function translateSentence(sentence,sourceLang,targetLang){
 
 //Translate Array of Sentences (Paragraph)
 //MAXATTEMPTS should be greater than 1 because otherwise, you will skip the first element with an error due to API limits
-export async function translateParagraph(paragraph,sourceLang,targetLang,MAXATTEMPTS=2){
+export async function translateParagraph(paragraph,sourceLang,targetLang,MAXATTEMPTS=3){
     //Max attempt safety so that result is not null.
     if(MAXATTEMPTS < 1){
         MAXATTEMPTS = 1;
@@ -74,7 +75,8 @@ export async function translateParagraph(paragraph,sourceLang,targetLang,MAXATTE
             attempts += 1;
 
             if(result.responseCode == 2){
-                await new Promise(r => setTimeout(r, 60*1000));
+                //Wait 120 seconds to hopefully get another use.
+                await new Promise(r => setTimeout(r, 120*1000));
             }else{
                 break;
             }
@@ -87,10 +89,11 @@ export async function translateParagraph(paragraph,sourceLang,targetLang,MAXATTE
 }
 
 //Translate Array of Paragraphs
-export async function translateParagraphs(paragraphs,sourceLang,targetLang,MAXATTEMPTS=2){
+export async function translateParagraphs(paragraphs,sourceLang,targetLang,MAXATTEMPTS=3){
     var translatedParagraphs = [];
     for(var i = 0; i < paragraphs.length;i++){
         const paragraph = paragraphs[i];
+        console.log(paragraph);
 
         var result = await translateParagraph(paragraph,sourceLang,targetLang,MAXATTEMPTS);
 
