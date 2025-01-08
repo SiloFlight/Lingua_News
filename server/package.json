@@ -10,8 +10,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/translate": "^8.5.0",
     "axios": "^1.7.9",
+    "compromise": "^14.14.3",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsdom": "^25.0.1",
+    "mongodb": "^6.12.0",
     "nlpcloud": "^2.0.8"
-  }
+  },
+  "type": "module"
 }
