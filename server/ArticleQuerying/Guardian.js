@@ -3,7 +3,7 @@ import axios from 'axios';
 import {config} from 'dotenv';
 import {JSDOM} from 'jsdom';
 
-import {decomposeParagraph} from '../ParagraphProcessing/Compromise.js'
+import {decomposeParagraph} from '../paragraphProcessing.js'
 
 const dom = new JSDOM(`<!DOCTYPE html>`);
 const document = dom.window.document;
@@ -12,7 +12,7 @@ config();
 
 const singleItemAPIUrl = "https://content.guardianapis.com/";
 const searchAPIUrl = "https://content.guardianapis.com/search";
-const baseQueryStr = `?api-key=${process.env.GUARDIAN_API_KEY}&show-blocks=all&show-fields=all&show-tags=all&format=json`;
+const baseQueryStr = `?api-key=${process.env.GUARDIAN_API_KEY}&show-blocks=all&show-fields=all&show-tags=all&format=json&type=article`;
 
 //BlackList (To-Do): Crossword
 
@@ -149,9 +149,7 @@ export async function GetArticles(){
         var results = response.data.response.results;
 
         for(var i = 0; i < results.length; i++){
-            if(results[i].type == "article"){
-                processedArticles.push(formatArticle(results[i]));
-            }
+            processedArticles.push(formatArticle(results[i]));
         }
 
         return processedArticles;
