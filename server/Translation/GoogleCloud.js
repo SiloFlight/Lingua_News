@@ -1,11 +1,12 @@
 import { TranslationServiceClient } from '@google-cloud/translate';
+import { config } from 'dotenv';
+config()
 
 // Instantiates a client
 const translationClient = new TranslationServiceClient();
 
-const projectId = 'winterimproject';
-const location = 'global';
-const text = 'Hello, world!';
+const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
+const location = process.env.GOOGLE_CLOUD_PROJECT_LOCATION;
 
 const validLanguagesCodes = ['en','es','fr'];
 
