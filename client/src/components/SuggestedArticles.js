@@ -1,9 +1,6 @@
 import Container from "react-bootstrap/Container";
 
 function GetSuggestedArticles({suggestedArticles}){
-    //articleRecommendations are an array of articles
-    //Each Article has a name and its link
-
     const SuggestedArticles = suggestedArticles.map((suggestedArticle,index) =>{
         return (
             <p>

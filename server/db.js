@@ -2,7 +2,7 @@
 import {config} from 'dotenv';
 config();
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 const connectionString = process.env.DATABASE_URL;
 
 const client = new MongoClient(connectionString);
@@ -48,19 +48,6 @@ export async function InsertArticles(articles){
     return res;
 }
 
-export async function GetArticle(query={}){
-    try{
-        const db = client.db("MainDB");
-        const collection = db.collection("Articles");
-
-        const article = await collection.findOne(query);
-
-        return article;
-    }catch(e){
-        console.error(e);
-    }
-}
-
 export async function GetArticles(query={},max=10){
     try{
         const db = client.db("MainDB");
@@ -75,15 +62,28 @@ export async function GetArticles(query={},max=10){
     }
 }
 
-//Returns an article not translated into this language and doesn't have a translation in progress.
-export async function GetUntranslatedArticle(languageCode){
-    const query = {
+export async function GetUntranslatedArticles(languageCode,max=10){
+    const query = languageCode != undefined ? {
         [`translatedTexts.${languageCode}`] : {$exists : false},
         translationInProgress : false
-    };
-    const untranslatedArticle = await GetArticle(query);
+    } :
+    {
+        translationInProgress : false
+    }
 
-    return untranslatedArticle;
+    return await GetArticles(query,max);
+}
+
+export async function GetTranslatedArticles(languageCode,max=10){
+    const query = languageCode != undefined ? {
+        [`translatedTexts.${languageCode}`] : {$exists : true},
+    } : {};
+
+    return await GetArticles(query,max);
+}
+
+export async function GetArticleByID(id){
+    return id == undefined ? [] : await GetArticles({_id: new ObjectId(id)});
 }
 
 export async function UpdateTranslationStatus(id,translationStatus){

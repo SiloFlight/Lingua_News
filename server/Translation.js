@@ -37,7 +37,6 @@ export async function translateParagraph(paragraph,sourceLang,targetLang,MAXATTE
         const sentence = paragraph[i];
         for(var j = 0; j < MAXATTEMPTS; i++){
             const res = await translateSentence(sentence,sourceLang,targetLang);
-            console.log(res);
 
             if(res == "" && sentence !=""){
                 continue;
@@ -61,6 +60,3 @@ export async function translateParagraphs(paragraphs,sourceLang,targetLang,MAXAT
     }
     return results;
 }
-
-
-//To-Do: Something that actuall formats it properly.
