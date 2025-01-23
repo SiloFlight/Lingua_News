@@ -25,11 +25,11 @@ function GetHome({articles}){
 
     return (<Container>
         <Row>
-        <Row className="text-center py-2 fs-5">
+        {/*<Row className="text-center py-2 fs-5">
             <Col className="border rounded" style={{background:colors.c4}}>Spanish</Col>
             <Col className="border rounded" style={{background:colors.c4}}>French</Col>
             <Col className="border rounded" style={{background:colors.c4}}>Italian</Col>
-        </Row>
+    </Row>*/}
         {Articles}
         </Row>
         
