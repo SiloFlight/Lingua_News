@@ -11,7 +11,9 @@ The frontend is a react app, while the backend hosts an Articles route which ret
 
 # Screenshots of Application:
 
-!
+![Home Page](/README_Images/Home_Page.png)
+![Article Page](/README_Images/Article_Page.png)
+![Article Page with Translation](/README_Images/Article_Page(With_Translation).png)
 
 # Local Setup Instructions:
 ## .env File
