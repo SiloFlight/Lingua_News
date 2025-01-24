@@ -3,7 +3,7 @@ import cors from 'cors';
 const app = express();
 
 app.use(cors({
-    origin:"https://lingua-news.onrender.com/"
+    origin: true
 }))
 
 import Articles from './routes/Articles.js';
