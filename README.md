@@ -9,6 +9,9 @@ Translations are done through Google Cloud's Translation API, Google Cloud can b
 
 The frontend is a react app, while the backend hosts an Articles route which returns a list of the 10 most recent articles, and another which returns a specific article based on its id.
 
+# Deployed Link
+https://lingua-news.onrender.com/
+
 # Screenshots of Application:
 
 ![Home Page](/README_Images/Home_Page.png)
