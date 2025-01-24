@@ -9,9 +9,7 @@ import ArticleBody from "../components/ArticleBody.js";
 
 import PageNotFound from "./PageNotFound.js";
 
-import {config} from 'dotenv';
-config();
-backendURL = process.env.backendURL;
+import { backendURL } from "../consts";
 
 function Article(){
     //Request Articles from the backend

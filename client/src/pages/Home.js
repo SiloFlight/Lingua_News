@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import {config} from 'dotenv';
-config();
-backendURL = process.env.backendURL;
+import { backendURL } from "../consts";
 
 import HomeComponent from "../components/Home";
 import Navbar from "../components/Navbar.js";
