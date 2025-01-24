@@ -1,4 +1,4 @@
-const backendURL = "http://localhost:3001/";
+const backendURL = "https://lingua-news-backend.onrender.com/";
 const colors = {
     c1:"#eff3ff",
     c2:"#c6dbef",
