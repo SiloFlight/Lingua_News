@@ -11,6 +11,7 @@ The frontend is a react app, while the backend hosts an Articles route which ret
 
 # Deployed Link
 https://lingua-news.onrender.com/
+You may have to wait up to 30 seconds for the backend to start.
 
 # Screenshots of Application:
 
